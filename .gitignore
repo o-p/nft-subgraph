@@ -1,0 +1,16 @@
+# IDE settings
+.vscode/
+# Graph build files
+build/
+# Docker container directory
+data/
+# Graph generated classes
+generated/
+# Dependency directories
+node_modules/
+
+# Logs
+logs
+*.log
+yarn-debug.log*
+yarn-error.log*

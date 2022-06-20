@@ -1,0 +1,16 @@
+{
+  "name": "nft-subgraph",
+  "version": "1.0.0",
+  "scripts": {
+    "create": "graph create --node https://graph.fairyswap.finance/jsonrpc findora/nft",
+    "create:dev": "graph create --node http://127.0.0.1:8020 findora/nft",
+    "codegen": "graph codegen subgraph.yaml",
+    "build": "graph build subgraph.yaml",
+    "deploy": "graph deploy --product hosted-service --debug --node https://graph.fairyswap.finance/jsonrpc --ipfs https://graph.fairyswap.finance findora/nft subgraph.yaml",
+    "deploy:dev": "graph deploy --product hosted-service --debug --node http://127.0.0.1:8020 --ipfs http://127.0.0.1:5001 findora/nft subgraph.yaml"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.30.4",
+    "@graphprotocol/graph-ts": "^0.27.0"
+  }
+}

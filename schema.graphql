@@ -1,0 +1,110 @@
+type Account @entity {
+  id: ID! # ETH addr
+  nfts: [NFT!] @derivedFrom(field: "owner")
+  shares: [NFTShares!] @derivedFrom(field: "owner")
+
+  # analytics
+  sales: Int!
+  purchases: Int!
+  spent: BigInt!
+  earned: BigInt!
+}
+
+enum NFTStandard @entity {
+  ERC721  # Non-Fungible Token Standard
+  ERC1155 # Multi Token Standard
+}
+
+type NFTShares @entity {
+  id: ID! # {account}:{contractAddress}_{tokenId}
+  nft: NFT!
+  owner: Account!
+
+  amount: BigInt!
+}
+
+type NFT @entity {
+  id: ID! # {contractAddress}_{tokenId}
+
+  contract: NFTContract!
+  tokenId: BigInt!
+
+  owner: Account
+  shares: [NFTShares!] @derivedFrom(field: "nft")
+  totalShares: BigInt!
+  tokenURI: String
+
+  # orders: [Order!] @derivedFrom(field: "nft") # History of all orders. Should only ever be ONE open order. all others must be cancelled or sold
+  bids: [Bid!] @derivedFrom(field: "nft") # History of all bids.
+  # activeOrder: Order
+
+  # image: String
+
+  createdAt: BigInt!
+  updatedAt: BigInt!
+
+  # analytics
+  sales: Int!
+  volume: BigInt!
+
+  # search indexes
+  # searchOrderStatus: OrderStatus
+  # searchOrderPrice: BigInt
+  # searchOrderExpiresAt: BigInt
+  # searchOrderCreatedAt: BigInt
+
+  searchText: String
+
+  # searchParcelIsInBounds: Boolean
+  # searchParcelX: BigInt
+  # searchParcelY: BigInt
+  # searchParcelEstateId: String
+
+  # searchEstateSize: Int
+
+  # searchIsWearableHead: Boolean
+  # searchIsWearableAccessory: Boolean
+  # searchWearableRarity: String # We're using String instead of WearableRarity here so we can later query this field via ()_in
+  # searchWearableCategory: WearableCategory
+  # searchWearableBodyShapes: [WearableBodyShape!]
+}
+
+type NFTContract @entity {
+  id: ID! # Contract address
+
+  standard: NFTStandard!
+
+  name: String
+  symbol: String
+
+  tokens: [NFT!] @derivedFrom(field: "contract")
+}
+
+type Bid @entity {
+  id: ID!
+  bidAddress: Bytes!
+  # category: Category!
+  nft: NFT
+  nftAddress: Bytes!
+  tokenId: BigInt!
+  bidder: Bytes
+  seller: Bytes
+  price: BigInt!
+  fingerprint: Bytes
+  # status: OrderStatus!
+  blockchainId: String!
+  blockNumber: BigInt!
+  expiresAt: BigInt!
+  createdAt: BigInt!
+  updatedAt: BigInt!
+}
+
+# Data accumulated and condensed into day stats for all of the Marketplace activity
+type AnalyticsDayData @entity {
+  id: ID! # timestamp rounded to current day by dividing by 86400
+  date: Int!
+  sales: Int!
+  volume: BigInt!
+  creatorsEarnings: BigInt!
+  daoEarnings: BigInt!
+}
